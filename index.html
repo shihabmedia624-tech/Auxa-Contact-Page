@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Auxa</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --black:   #141f36;
+  --dark:    #1c2b48;
+  --dark2:   #223353;
+  --dark3:   #2a3f63;
+  --orange:  #8eb1d1;
+  --orange2: #a7c7e7;
+  --white:   #e8ecef;
+  --muted:   #9db3c9;
+  --muted2:  #6d84a3;
+  --border:  #2e3f5c;
+  --border2: #3a4f70;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR */
+.cursor-dot {
+  width: 8px; height: 8px;
+  background: var(--orange); border-radius: 50%;
+  position: fixed; z-index: 9999; pointer-events: none;
+  transform: translate(-50%,-50%); transition: transform .1s;
+}
+.cursor-circle {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(142,177,209,.4); border-radius: 50%;
+  position: fixed; z-index: 9998; pointer-events: none;
+  transform: translate(-50%,-50%); transition: all .18s ease;
+}
+@media (max-width: 768px) {
+  .cursor-dot, .cursor-circle { display: none; }
+  body { cursor: auto; }
+}
+
+/* ── HAMBURGER */
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 8px;
+  flex-shrink: 0; margin-left: 8px; z-index: 201;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--white); border-radius: 2px; transition: all .3s ease;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE DRAWER */
+.mobile-menu {
+  display: none; position: fixed; top: 0; left: 0; right: 0;
+  background: #0d0d0d; border-bottom: 1px solid var(--border);
+  padding: 80px 24px 32px; z-index: 190;
+  transform: translateY(-100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu ul { list-style: none; margin-bottom: 24px; }
+.mobile-menu ul li { border-bottom: 1px solid var(--border); }
+.mm-link {
+  display: block; padding: 18px 0;
+  text-decoration: none; color: var(--white);
+  font-size: 1.1rem; font-weight: 600; letter-spacing: -.01em; transition: color .2s;
+}
+.mm-link:hover, .mm-link.active { color: var(--orange); }
+@media (max-width: 768px) {
+  .nav-hamburger { display: flex; }
+  .nav-btn { display: none !important; }
+  .nav-links { display: none !important; }
+  .mobile-menu { display: block; }
+}
+
+/* ── NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 60px;
+  border-bottom: 1px solid transparent;
+  transition: all .4s ease; width: 100%;
+}
+nav.scrolled {
+  background: #0d0d0d;
+  border-bottom-color: var(--border);
+  padding: 18px 60px;
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800; font-size: 1.4rem; letter-spacing: -.02em; color: var(--white);
+}
+.nav-logo-text .o { color: var(--orange); }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: .85rem; font-weight: 400;
+  letter-spacing: .04em; text-transform: uppercase; transition: color .25s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.nav-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 22px; background: var(--orange);
+  border: none; border-radius: 100px; color: #fff;
+  font-family: 'Manrope', sans-serif; font-weight: 600; font-size: .82rem;
+  cursor: none; letter-spacing: .03em; transition: all .25s; text-decoration: none;
+}
+.nav-btn:hover { background: var(--orange2); transform: translateY(-1px); }
+.btn-arrow {
+  width: 22px; height: 22px;
+  background: rgba(255,255,255,.2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: .7rem;
+}
+@media (max-width: 1024px) { nav { padding: 20px 40px; } nav.scrolled { padding: 16px 40px; } }
+@media (max-width: 768px)  { nav { padding: 18px 24px; } nav.scrolled { padding: 14px 24px; } }
+
+/* ── SCROLL REVEAL */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* CONTACT HERO */
+.contact-hero {
+  padding-top: 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  min-height: 620px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.contact-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 100%, rgba(142,177,209,.12), transparent 65%);
+  pointer-events: none; z-index: 1;
+}
+.contact-hero::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 200px;
+  background: linear-gradient(to bottom, var(--black) 10%, transparent 100%);
+  pointer-events: none; z-index: 2;
+}
+.ch-globe-wrap {
+  position: absolute;
+  bottom: calc(-55vw);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110vw;
+  height: 110vw;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(142,177,209,.25), rgba(142,177,209,.03) 60%, transparent 72%);
+}
+.contact-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none; z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
+.contact-hero-inner {
+  position: relative; z-index: 3;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+@media (max-width: 768px) {
+  .contact-hero { min-height: unset; padding: 100px 24px 60px; }
+  .contact-hero-inner { padding: 20px 0 40px; }
+  .ch-globe-wrap { width: 100vw; height: 100vw; bottom: calc(-50vw); }
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--orange);
+  background: rgba(142,177,209,.08); border: 1px solid rgba(142,177,209,.2);
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+}
+.hero-tag-dot {
+  width: 6px; height: 6px; background: var(--orange);
+  border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .4; transform: scale(.7); }
+}
+.contact-hero h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2.8rem, 4.5vw, 5rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1.05;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .contact-hero h1 { font-size: clamp(2rem, 7vw, 3rem); white-space: normal; }
+}
+.contact-hero h1 .o { color: var(--orange); }
+.contact-hero p {
+  color: var(--muted); font-size: .95rem; line-height: 1.85;
+  max-width: 480px; margin: 0 auto;
+}
+
+/* CONTACT BODY */
+.contact-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 60px 120px;
+  gap: 80px;
+  align-items: start;
+}
+.contact-info { position: sticky; top: 110px; }
+.contact-info-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--orange);
+  background: rgba(142,177,209,.08); border: 1px solid rgba(142,177,209,.2);
+  padding: 5px 13px; border-radius: 100px; margin-bottom: 20px;
+}
+.contact-info h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1.1;
+  margin-bottom: 16px;
+}
+.contact-info h2 .o { color: var(--orange); }
+.contact-info p {
+  color: var(--muted); font-size: .88rem; line-height: 1.85;
+  margin-bottom: 48px; max-width: 380px;
+}
+.contact-details { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; }
+.contact-detail {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 20px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color .25s;
+}
+.contact-detail:hover { border-color: rgba(142,177,209,.25); }
+.cd-icon {
+  width: 42px; height: 42px; flex-shrink: 0;
+  background: rgba(142,177,209,.08);
+  border: 1px solid rgba(142,177,209,.18);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cd-icon svg {
+  width: 18px; height: 18px;
+  stroke: var(--orange); fill: none;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.cd-text { display: flex; flex-direction: column; gap: 3px; }
+.cd-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted2);
+}
+.cd-value { font-size: .86rem; font-weight: 600; color: rgba(255,255,255,.85); }
+
+.contact-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 20px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: .8rem; color: var(--muted);
+  margin-bottom: 48px;
+}
+.badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #28c840;
+  box-shadow: 0 0 0 3px rgba(40,200,64,.15);
+  animation: pulse-green 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-green {
+  0%,100% { box-shadow: 0 0 0 3px rgba(40,200,64,.15); }
+  50%      { box-shadow: 0 0 0 6px rgba(40,200,64,.06); }
+}
+.badge-text strong { color: var(--white); }
+
+.contact-form-panel {
+  background: var(--dark);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,.4);
+}
+.cfp-header {
+  padding: 32px 36px 26px;
+  border-bottom: 1px solid var(--border);
+  background: var(--dark2);
+  position: relative; overflow: hidden;
+}
+.cfp-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(142,177,209,.07), transparent 70%);
+  pointer-events: none;
+}
+.cfp-tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--orange);
+  background: rgba(142,177,209,.08); border: 1px solid rgba(142,177,209,.2);
+  padding: 5px 12px; border-radius: 100px; margin-bottom: 14px;
+  position: relative;
+}
+.cfp-tag-dot {
+  width: 6px; height: 6px; background: var(--orange);
+  border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite;
+}
+.cfp-header h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -.03em; line-height: 1.15;
+  position: relative;
+}
+.cfp-header h3 span { color: var(--orange); }
+.cfp-header p {
+  font-size: .82rem; color: var(--muted);
+  line-height: 1.7; margin-top: 8px; position: relative;
+}
+.cfp-body { padding: 32px 36px 36px; background: var(--black); }
+.cfp-field { margin-bottom: 18px; }
+.cfp-field label {
+  display: block; font-size: .72rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted2); margin-bottom: 8px;
+}
+.cfp-field input, .cfp-field textarea, .cfp-field select {
+  width: 100%; padding: 13px 16px;
+  background: var(--dark); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--white);
+  font-family: 'Manrope', sans-serif; font-size: .88rem;
+  transition: border-color .2s;
+}
+.cfp-field input:focus, .cfp-field textarea:focus, .cfp-field select:focus {
+  outline: none; border-color: var(--orange);
+}
+.cfp-field textarea { resize: vertical; min-height: 110px; }
+.cfp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cfp-submit {
+  width: 100%; padding: 15px;
+  background: var(--orange); border: none; border-radius: 10px;
+  color: #fff; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .9rem;
+  cursor: pointer; transition: background .2s; margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.cfp-submit:hover { background: var(--orange2); }
+.cfp-note { font-size: .74rem; color: var(--muted2); text-align: center; margin-top: 14px; }
+
+/* BOTTOM CTA */
+.bottom-cta {
+  padding: 140px 60px;
+  background: var(--black);
+  text-align: center;
+  position: relative; overflow: hidden;
+  border-top: 1px solid var(--border);
+}
+.bottom-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 55% 90% at 50% 50%, rgba(142,177,209,.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.bottom-cta::after {
+  content: "LET'S BUILD";
+  position: absolute;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16vw; font-weight: 800;
+  color: rgba(255,255,255,.06);
+  letter-spacing: -.03em; line-height: 1;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap; pointer-events: none; user-select: none; z-index: 0;
+}
+.bottom-cta-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+.bottom-cta-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--orange);
+  background: rgba(142,177,209,.08); border: 1px solid rgba(142,177,209,.2);
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+}
+.bottom-cta h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800; font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -.04em; line-height: 1.05; margin-bottom: 18px;
+}
+.bottom-cta h2 .o { color: var(--orange); }
+.bottom-cta p { color: var(--muted); font-size: .92rem; line-height: 1.85; margin-bottom: 44px; }
+.bottom-cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-primary-lg {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 15px 34px; background: var(--orange);
+  border: none; border-radius: 100px; color: #fff;
+  font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .88rem;
+  cursor: pointer; letter-spacing: .02em; transition: all .25s; text-decoration: none;
+}
+.btn-primary-lg:hover { background: var(--orange2); transform: translateY(-2px); }
+.btn-ghost-lg {
+  display: inline-flex; align-items: center;
+  padding: 15px 34px;
+  border: 1px solid var(--border2); border-radius: 100px; color: var(--white);
+  font-family: 'Manrope', sans-serif; font-weight: 600; font-size: .88rem;
+  cursor: pointer; letter-spacing: .02em; transition: all .25s;
+  background: transparent; text-decoration: none;
+}
+.btn-ghost-lg:hover { border-color: var(--orange); color: var(--orange); }
+
+/* FOOTER */
+footer.lnx-footer {
+  display: block;
+  background:
+    radial-gradient(ellipse 70% 90% at 20% 0%, rgba(142,177,209,.10), transparent 58%),
+    linear-gradient(180deg, #101010 0%, #070707 100%);
+  border-top: 1px solid var(--border);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+footer.lnx-footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 54px 54px;
+  pointer-events: none;
+  opacity: .75;
+}
+.lnx-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 70px 60px 34px;
+  position: relative;
+  z-index: 1;
+}
+.lnx-footer-grid {
+  display: grid;
+  grid-template-columns: 1.35fr .8fr .95fr .8fr;
+  gap: 54px;
+  align-items: flex-start;
+}
+.lnx-footer-brand { max-width: 360px; }
+.lnx-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 22px;
+  text-decoration: none;
+}
+.lnx-footer-logo-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800; font-size: 1.3rem; letter-spacing: -.02em; color: var(--white);
+}
+.lnx-footer-logo-text .o { color: var(--orange); }
+.lnx-footer-text {
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 26px;
+}
+.lnx-footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  background: rgba(142,177,209,.10);
+  border: 1px solid rgba(142,177,209,.28);
+  border-radius: 100px;
+  color: var(--orange);
+  text-decoration: none;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  transition: all .25s ease;
+}
+.lnx-footer-cta:hover { background: var(--orange); color: #fff; transform: translateY(-2px); }
+.lnx-footer-col h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: .78rem;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  margin-bottom: 20px;
+}
+.lnx-footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+.lnx-footer-col a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .86rem;
+  font-weight: 400;
+  transition: color .2s ease, padding-left .2s ease;
+}
+.lnx-footer-col a:hover { color: var(--orange); padding-left: 4px; }
+.lnx-footer-contact-card {
+  margin-top: 22px;
+  padding: 16px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.lnx-footer-contact-card span {
+  display: block;
+  font-size: .68rem;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 6px;
+}
+.lnx-footer-contact-card a { color: var(--white); font-size: .86rem; padding-left: 0 !important; }
+.lnx-footer-bottom {
+  margin-top: 54px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  color: var(--muted2);
+  font-size: .78rem;
+}
+.lnx-footer-bottom-links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.lnx-footer-bottom-links a { color: var(--muted2); text-decoration: none; transition: color .2s ease; }
+.lnx-footer-bottom-links a:hover { color: var(--orange); }
+
+@media (max-width: 1024px) {
+  .contact-body { gap: 56px; padding: 80px 40px 100px; }
+  .lnx-footer-inner { padding: 60px 40px 30px; }
+  .lnx-footer-grid { grid-template-columns: 1fr 1fr; gap: 42px; }
+}
+@media (max-width: 900px) {
+  .contact-hero { padding: 140px 24px 60px; }
+  .contact-body { grid-template-columns: 1fr; padding: 60px 24px 80px; gap: 48px; }
+  .contact-info { position: static; }
+  .contact-info p { max-width: 100%; }
+  .bottom-cta { padding: 80px 24px; }
+}
+@media (max-width: 640px) {
+  .contact-hero { padding: 120px 20px 48px; }
+  .contact-hero h1 { font-size: clamp(2rem, 9vw, 2.8rem); }
+  .contact-body { padding: 48px 20px 60px; }
+  .contact-form-panel { border-radius: 18px; }
+  .cfp-header, .cfp-body { padding: 24px 24px 20px; }
+  .cfp-header h3 { font-size: 1.3rem; }
+  .cfp-row { grid-template-columns: 1fr; }
+  .bottom-cta { padding: 60px 20px; }
+  .bottom-cta h2 { font-size: 1.8rem; }
+  .lnx-footer-inner { padding: 52px 24px 28px; }
+  .lnx-footer-grid { grid-template-columns: 1fr; gap: 34px; }
+  .lnx-footer-bottom { flex-direction: column; align-items: flex-start; margin-top: 42px; }
+  .lnx-footer-bottom-links { gap: 14px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-circle" id="ring"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo" aria-label="Auxa Home">
+    <span class="nav-logo-text">Aux<span class="o">a</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Our Projects</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#" class="active">Contact</a></li>
+  </ul>
+  <a href="#" class="nav-btn">Book a Call <span class="btn-arrow">→</span></a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#" class="mm-link">Home</a></li>
+    <li><a href="#" class="mm-link">Services</a></li>
+    <li><a href="#" class="mm-link">Our Projects</a></li>
+    <li><a href="#" class="mm-link">About</a></li>
+    <li><a href="#" class="mm-link active">Contact</a></li>
+  </ul>
+  <a href="#" class="btn-primary-lg" style="width:100%;justify-content:center;">Book a Call <span class="btn-arrow">→</span></a>
+</div>
+
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="contact-hero-grid"></div>
+  <div class="ch-globe-wrap"></div>
+
+  <div class="contact-hero-inner reveal">
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      Let's Talk
+    </div>
+    <h1>Got a Project in Mind?<br><span class="o">Let's Make It Happen</span></h1>
+    <p>Whether you need AI automation, a custom AI agent, a high-converting website, or a complete funnel — we're here to help. Fill out the form and we'll get back to you within 24 hours.</p>
+  </div>
+</section>
+
+<!-- CONTACT BODY -->
+<div class="contact-body">
+
+  <div class="contact-info reveal">
+    <div class="contact-info-tag">✦ Reach Out</div>
+    <h2>We'd Love to Hear<br>About Your <span class="o">Project</span></h2>
+    <p>Tell us what you're building and we'll figure out the best way to help. No fluff, no hard sell — just a straight conversation about what you need.</p>
+
+    <div class="contact-details">
+      <div class="contact-detail">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="cd-text">
+          <span class="cd-label">Email Us</span>
+          <span class="cd-value">hello@auxa.com</span>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.7a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="cd-text">
+          <span class="cd-label">WhatsApp</span>
+          <span class="cd-value">+92 371 2308885</span>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="cd-text">
+          <span class="cd-label">Response Time</span>
+          <span class="cd-value">Within 24 hours</span>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="cd-text">
+          <span class="cd-label">Based In</span>
+          <span class="cd-value">Lahore, Pakistan — Serving Globally</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-badge">
+      <span class="badge-dot"></span>
+      <span class="badge-text">Currently <strong>available</strong> for new projects</span>
+    </div>
+  </div>
+
+  <div class="contact-form-panel reveal">
+    <div class="cfp-header">
+      <div class="cfp-tag">
+        <span class="cfp-tag-dot"></span>
+        Send a Message
+      </div>
+      <h3>Let's Build Something<br><span>That Actually Converts</span></h3>
+      <p>Fill out the form below — we'll get back to you within 24 hours.</p>
+    </div>
+
+    <form class="cfp-body" id="contactForm">
+      <div class="cfp-row">
+        <div class="cfp-field">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="fname" placeholder="Jane" required>
+        </div>
+        <div class="cfp-field">
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="lname" placeholder="Doe" required>
+        </div>
+      </div>
+      <div class="cfp-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="jane@company.com" required>
+      </div>
+      <div class="cfp-field">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000">
+      </div>
+      <div class="cfp-field">
+        <label for="service">What do you need?</label>
+        <select id="service" name="service">
+          <option>AI Automation</option>
+          <option>AI Agents</option>
+          <option>Website</option>
+          <option>Funnel</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="cfp-field">
+        <label for="message">Tell us about your project</label>
+        <textarea id="message" name="message" placeholder="A quick note on what you're building and what you need help with..."></textarea>
+      </div>
+      <button type="submit" class="cfp-submit" id="cfpSubmitBtn">Send Message <span class="btn-arrow">→</span></button>
+      <p class="cfp-note" id="cfpNote">We typically respond within 24 hours.</p>
+    </form>
+  </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <div class="bottom-cta-inner reveal">
+    <div class="bottom-cta-tag">✦ Ready to Start?</div>
+    <h2>Prefer a Call Instead?<br><span class="o">Book One Directly</span></h2>
+    <p>Skip the form — jump straight to a free 30-minute strategy call. No pitch, no pressure, just a focused conversation about your project.</p>
+    <div class="bottom-cta-btns">
+      <a href="#" class="btn-primary-lg">Book a Free Call <span class="btn-arrow">→</span></a>
+      <a href="#" class="btn-ghost-lg">View Our Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="lnx-footer">
+  <div class="lnx-footer-inner">
+    <div class="lnx-footer-grid">
+      <div class="lnx-footer-brand">
+        <a href="#" class="lnx-footer-logo" aria-label="Auxa Home">
+          <span class="lnx-footer-logo-text">Aux<span class="o">a</span></span>
+        </a>
+        <p class="lnx-footer-text">
+          Auxa builds AI automation systems, AI agents, high-converting websites, and funnels for businesses ready to scale.
+        </p>
+        <a href="#" class="lnx-footer-cta">Book a Free Call <span>→</span></a>
+      </div>
+
+      <div class="lnx-footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Our Projects</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="lnx-footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">AI Automation</a></li>
+          <li><a href="#">AI Agents</a></li>
+          <li><a href="#">Websites</a></li>
+          <li><a href="#">Funnels</a></li>
+        </ul>
+      </div>
+
+      <div class="lnx-footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Services</a></li>
+          <li><a href="#">Book a Call</a></li>
+        </ul>
+        <div class="lnx-footer-contact-card">
+          <span>Start a project</span>
+          <a href="#">Contact Auxa</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="lnx-footer-bottom">
+      <div>© 2026 Auxa. All rights reserved.</div>
+      <div class="lnx-footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Services</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const dot  = document.getElementById('dot');
+const ring = document.getElementById('ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+});
+(function animRing() {
+  rx += (mx - rx) * .12; ry += (my - ry) * .12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
+
+const hamburger  = document.getElementById('navHamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+
+const WEBHOOK_URL = 'http://localhost:5678/webhook-test/Contact-page-automation';
+
+const contactForm  = document.getElementById('contactForm');
+const submitBtn    = document.getElementById('cfpSubmitBtn');
+const cfpNote      = document.getElementById('cfpNote');
+const cfpNoteText0 = cfpNote.textContent;
+
+contactForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    firstName: document.getElementById('fname').value,
+    lastName:  document.getElementById('lname').value,
+    email:     document.getElementById('email').value,
+    phone:     document.getElementById('phone').value,
+    service:   document.getElementById('service').value,
+    message:   document.getElementById('message').value,
+    source:    'Auxa contact page',
+    submittedAt: new Date().toISOString()
+  };
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  cfpNote.textContent = '';
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error('Webhook responded with status ' + res.status);
+
+    contactForm.reset();
+    submitBtn.innerHTML = 'Message Sent <span class="btn-arrow">✓</span>';
+    cfpNote.textContent = "Thanks — we'll get back to you within 24 hours.";
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Send Message <span class="btn-arrow">→</span>';
+    cfpNote.textContent = 'Something went wrong sending your message. Please try again or email us directly.';
+    console.error('Contact form submit failed:', err);
+  }
+});
+
+const revealEls = document.querySelectorAll('.reveal');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+}, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
